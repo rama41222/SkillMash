@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SkillMash</string>
+    <string name="facebook_app_id">775429522651949</string>
+    <string name="fb_login_protocol_scheme">dd7cd71543ee3887b0a92aa3307e3e7c</string>
 </resources>
