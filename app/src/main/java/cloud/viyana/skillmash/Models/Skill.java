@@ -1,5 +1,5 @@
 
-package cloud.viyana.skillmash;
+package cloud.viyana.skillmash.Models;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

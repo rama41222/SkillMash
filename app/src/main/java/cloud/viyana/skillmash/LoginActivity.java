@@ -2,10 +2,10 @@ package cloud.viyana.skillmash;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -19,8 +19,10 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import cloud.viyana.skillmash.Models.Profile;
+import cloud.viyana.skillmash.Models.User;
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.client.protocol.RequestDefaultHeaders;
+import io.realm.Realm;
 
 public class LoginActivity extends AppCompatActivity {
     CallbackManager mCallbackManager;
@@ -30,12 +32,13 @@ public class LoginActivity extends AppCompatActivity {
     private static final String EMAIL = "email";
     private final String tag = "FACELOG";
     final String WEATHER_URL = "http://35.230.71.49:3410/api/v1";
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        realm = Realm.getDefaultInstance();
         mCallbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList(EMAIL, PUBLIC_PROFILE));
@@ -101,6 +104,13 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if(accessToken != null && user  !=null) {
+                    saveToDb(accessToken, user.getName(), user.getAvatar(), user.getId());
+                }
+
+                Profile prof = realm.where(Profile.class).equalTo("id", user.getId()).findFirst();
+                if(prof != null) {
+
+
 
                 }
             }
@@ -108,6 +118,38 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable e) {
                 super.onFailure(statusCode, headers, responseString, e);
                 Log.d(tag,responseString);
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
+    private void saveToDb(final String token, final String name, final String url, final String id) {
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                Profile profile = new Profile();
+                profile.setName(name);
+                profile.setProfileUrl(url);
+                profile.setToken(token);
+                profile.setId(id);
+                bgRealm.insertOrUpdate(profile);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                // Transaction was a success.
+                Log.v(tag,"Fu");
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                Log.e(tag, error.getMessage());
+                // Transaction failed and was automatically canceled.
             }
         });
     }

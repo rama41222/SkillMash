@@ -1,11 +1,13 @@
 
-package cloud.viyana.skillmash;
+package cloud.viyana.skillmash.Models;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+import io.realm.RealmObject;
+
+public class User{
 
     @SerializedName("_id")
     @Expose
