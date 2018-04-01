@@ -56,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(newCityIntent);
             } else {
                 Toast.makeText(LoginActivity.this, "Please, Login Again", Toast.LENGTH_SHORT);
+
             }
         } else {
             Toast.makeText(LoginActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT);
@@ -67,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
             Intent newCityIntent = new Intent(LoginActivity.this, MainActivity.class);
             newCityIntent.putExtra("prof", prof.toString());
             startActivity(newCityIntent);
-            return;
         }
 
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -75,14 +75,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 mProgressDialog.show();
                 String accessToken = "Bearer " + loginResult.getAccessToken().getToken();
-                System.out.println(accessToken);
-                Log.d(tag, "success");
-                Log.d(tag, loginResult.toString());
-                Log.d(tag, "User ID: "
-                        + loginResult.getAccessToken().getUserId()
-                        + "\n" +
-                        "Auth Token: "
-                        + loginResult.getAccessToken().getToken());
 
                 getUserProfile(accessToken);
 
@@ -170,33 +162,33 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveToDb(final String token, final String name, final String url, final String id) {
-        realm.executeTransactionAsync(new Realm.Transaction() {
+        realm.executeTransaction(new Realm.Transaction() {
             @Override
-            public void execute(Realm bgRealm) {
+            public void execute(Realm realm) {
                 Profile profile = new Profile();
                 profile.setName(name);
                 profile.setProfileUrl(url);
                 profile.setToken(token);
                 profile.setId(id);
-                bgRealm.insertOrUpdate(profile);
+                realm.insertOrUpdate(profile);
             }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                // Transaction was a success.
-                Log.v(tag,"Fu");
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.e(tag, error.getMessage());
-                // Transaction failed and was automatically canceled.
-            }
+
         });
     }
 
     public boolean isLoggedIn() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken != null;
+        try {
+            AccessToken accessToken = AccessToken.getCurrentAccessToken();
+            return accessToken != null;
+        } catch (Exception e) {
+            Log.e(tag, e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 }
