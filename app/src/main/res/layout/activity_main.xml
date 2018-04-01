@@ -83,17 +83,16 @@
         app:fabSize="normal"
         android:backgroundTint="@color/white"
         app:rippleColor="@color/black"
-        android:background="@color/white"
         app:borderWidth="0dp"
         app:color="@color/white"
         />
 
-    <android.support.v7.app.AlertController.RecycleListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/list_skills"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_marginTop="32dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.app.AlertController.RecycleListView>
+    </android.support.v7.widget.RecyclerView>
 </android.support.design.widget.CoordinatorLayout>

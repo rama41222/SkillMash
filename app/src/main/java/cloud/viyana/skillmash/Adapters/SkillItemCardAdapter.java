@@ -1,12 +1,17 @@
 package cloud.viyana.skillmash.Adapters;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
+import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.List;
 
@@ -22,19 +27,39 @@ public class SkillItemCardAdapter extends  RecyclerView.Adapter <SkillItemsViewH
     MainActivity mMainActivity;
     List<Skill> skillsList;
 
+    public SkillItemCardAdapter(MainActivity mainActivity, List<Skill> skillsList) {
+        this.mMainActivity = mainActivity;
+        this.skillsList = skillsList;
+    }
+
     @Override
     public SkillItemsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        LayoutInflater inflater = LayoutInflater.from(mMainActivity.getBaseContext());
+        View view = inflater.inflate(R.layout.skill_list_item, parent , false);
+
+        return new SkillItemsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(SkillItemsViewHolder holder, int position) {
+        Skill object = skillsList.get(position);
+        String id = object.getId();
+        String title = object.getSkill();
+        String rating = Integer.toString(object.ratingSummary());
 
+        mMainActivity.isUpdate = true;
+        mMainActivity.skill.setText(title);
+        mMainActivity.rating.setText(rating);
+
+        holder.skillTitle.setText(title);
+        holder.skillRating.setText(rating);
+        holder.skillRatingbar.setRating(object.ratingSummary());
+        Log.d("FACELOG", object.getSkill());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return skillsList.size();
     }
 }
 
@@ -48,10 +73,6 @@ class SkillItemsViewHolder extends RecyclerView.ViewHolder implements View.OnCli
         super(itemView);
         itemView.setOnClickListener(this);
         itemView.setOnCreateContextMenuListener(this);
-        setupUi(itemView);
-    }
-
-    private void setupUi(View itemView) {
         skillRatingbar = (RatingBar) itemView.findViewById(R.id.skill_rating_bar);
         skillTitle = (TextView) itemView.findViewById(R.id.skill_name);
         skillRating = (TextView) itemView.findViewById(R.id.skill_rating);

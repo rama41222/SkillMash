@@ -53,8 +53,8 @@ public class Skill {
                 }
             }
             if(sum != 0) {
-                int average = sum/size;
-                return average;
+                double average = sum/size;
+                return  (int)Math.floor(average);
             } else {
                 return 0;
             }

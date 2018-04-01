@@ -1,25 +1,111 @@
 package cloud.viyana.skillmash;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-
+import android.view.View;
+import android.widget.RatingBar;
 import com.facebook.AccessToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cloud.viyana.skillmash.Adapters.SkillItemCardAdapter;
+import cloud.viyana.skillmash.Models.Profile;
+import cloud.viyana.skillmash.Models.Skill;
+import cloud.viyana.skillmash.Models.SkillSet;
+import cloud.viyana.skillmash.Models.User;
+import cz.msebera.android.httpclient.Header;
+import dmax.dialog.SpotsDialog;
+import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
 
     final String tag = "FACELOGMAIN";
+    final String BASE_URL = "http://35.230.71.49:3410/api/v1";
     private Realm realm;
+    private List<Skill> mSkillList = new ArrayList<>();
+    RecyclerView mSkillItem;
+    RecyclerView.LayoutManager mLayoutManager;
+    FloatingActionButton fab;
+    FloatingActionButton nextPage;
+    public RatingBar mRatingBar;
+    SpotsDialog mAlertDialog;
+
+    public MaterialEditText skill, rating;
+    public int initRating = 0;
+    public boolean isUpdate = false;
+
+    SkillItemCardAdapter mSkillItemCardAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         realm = Realm.getDefaultInstance();
-        Log.d(tag, "main act");
+        setupUi();
+        loadData();
+
+    }
+
+    private void loadData() {
+        mAlertDialog.show();
+        Log.d(tag, "sdskdnkd");
+        Log.d(tag, mSkillList.size()+"");
+        Log.d(tag, "sdskdnkd");
+
+        if(mSkillList.size() > 0) {
+            mSkillList.clear();
+        }
+
+        Profile prof = realm.where(Profile.class).findFirst();
+        String accessToken = prof.getToken();
+        String userId = prof.getId();
+        getUserSkills(accessToken, userId);
+
+        //get Token
+        //send a get request to skills
+        // get all skills
+        // set to adapter
+
+        mAlertDialog.dismiss();
+
+    }
+
+    private void setupUi() {
+
+        mAlertDialog = new SpotsDialog(this);
+        skill = (MaterialEditText) findViewById(R.id.title);
+        rating = (MaterialEditText) findViewById(R.id.rating);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        mRatingBar = (RatingBar) findViewById(R.id.skill_rating_bar);
+        nextPage = (FloatingActionButton) findViewById(R.id.rate_others);
+        mSkillItem = (RecyclerView) findViewById(R.id.list_skills);
+        mLayoutManager = new LinearLayoutManager(this);
+        mSkillItem.setLayoutManager(mLayoutManager);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -40,5 +126,35 @@ public class MainActivity extends AppCompatActivity {
     public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
+    }
+
+    private void getUserSkills(String accessToken, String userId) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("Authorization", accessToken);
+        client.addHeader("Content-Type", "Application/json");
+        final String url  = BASE_URL+"/users/"+userId+"/skills";
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                GsonBuilder mGsonBuilder = new GsonBuilder();
+                Gson gson = mGsonBuilder.create();
+                SkillSet skillSet = gson.fromJson(String.valueOf(response), SkillSet.class);
+                Log.d(tag,skillSet.getSkills().toString());
+                for(Skill s : skillSet.getSkills()) {
+                    mSkillList.add(s);
+                }
+                mSkillItemCardAdapter = new SkillItemCardAdapter(MainActivity.this, mSkillList);
+                mSkillItem.setAdapter(mSkillItemCardAdapter);
+                Log.d(tag, mSkillList.size()+"");
+                mAlertDialog.dismiss();
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable e) {
+                super.onFailure(statusCode, headers, responseString, e);
+                Log.d(tag,responseString);
+                mAlertDialog.dismiss();
+
+            }
+        });
     }
 }
