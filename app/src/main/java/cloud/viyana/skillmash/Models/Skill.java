@@ -41,4 +41,24 @@ public class Skill {
         this.id = id;
     }
 
+    public int ratingSummary(){
+        if(rating.isEmpty()) {
+            return 0;
+        } else {
+            int sum = 0;
+            int size = this.rating.size();
+            for(int rate : this.rating ){
+                if(rate <=5 && rate >= 1) {
+                    sum += Math.abs(rate);
+                }
+            }
+            if(sum != 0) {
+                int average = sum/size;
+                return average;
+            } else {
+                return 0;
+            }
+        }
+    }
+
 }
