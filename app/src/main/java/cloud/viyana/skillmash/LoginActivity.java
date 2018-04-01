@@ -6,7 +6,9 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -40,16 +42,38 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         realm = Realm.getDefaultInstance();
         mCallbackManager = CallbackManager.Factory.create();
+        setLoader();
+
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList(EMAIL, PUBLIC_PROFILE));
+
+        Profile prof = realm.where(Profile.class).findFirst();
+        if(prof != null) {
+            mProgressDialog.dismiss();
+            if(isLoggedIn()) {
+                Intent newCityIntent = new Intent(LoginActivity.this, MainActivity.class);
+                newCityIntent.putExtra("prof", prof.toString());
+                startActivity(newCityIntent);
+            } else {
+                Toast.makeText(LoginActivity.this, "Please, Login Again", Toast.LENGTH_SHORT);
+            }
+        } else {
+            Toast.makeText(LoginActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT);
+            mProgressDialog.dismiss();
+        }
+
+
+        if(isLoggedIn()) {
+            Intent newCityIntent = new Intent(LoginActivity.this, MainActivity.class);
+            newCityIntent.putExtra("prof", prof.toString());
+            startActivity(newCityIntent);
+            return;
+        }
 
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                mProgressDialog = new ProgressDialog(LoginActivity.this);
-                mProgressDialog.setMessage("Retriving data");
                 mProgressDialog.show();
-
                 String accessToken = "Bearer " + loginResult.getAccessToken().getToken();
                 System.out.println(accessToken);
                 Log.d(tag, "success");
@@ -61,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                         + loginResult.getAccessToken().getToken());
 
                 getUserProfile(accessToken);
-                mProgressDialog.dismiss();
+
             }
 
             @Override
@@ -75,6 +99,12 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(tag, "Error");
             }
         });
+    }
+
+    private void setLoader() {
+        mProgressDialog = new ProgressDialog(LoginActivity.this);
+        mProgressDialog.setTitle("Logging in");
+        mProgressDialog.setMessage("Retriving data");
     }
 
     @Override
@@ -109,15 +139,26 @@ public class LoginActivity extends AppCompatActivity {
 
                 Profile prof = realm.where(Profile.class).equalTo("id", user.getId()).findFirst();
                 if(prof != null) {
-
-
-
+                    mProgressDialog.dismiss();
+                    if(isLoggedIn()) {
+                        Intent newCityIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        newCityIntent.putExtra("prof", prof.toString());
+                        startActivity(newCityIntent);
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Please, Login Again", Toast.LENGTH_SHORT);
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT);
+                    mProgressDialog.dismiss();
                 }
+
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable e) {
                 super.onFailure(statusCode, headers, responseString, e);
                 Log.d(tag,responseString);
+                mProgressDialog.dismiss();
+
             }
         });
     }
@@ -152,5 +193,10 @@ public class LoginActivity extends AppCompatActivity {
                 // Transaction failed and was automatically canceled.
             }
         });
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 }
