@@ -16,7 +16,7 @@
         <LinearLayout
             android:id="@+id/layout_info"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="18dp"
             android:background="@color/colorPrimaryDark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -24,24 +24,9 @@
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/title"
-                android:text="Skill"
-                android:textSize="30sp"
-                android:inputType="text"
-                android:textColorHint="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:met_baseColor="@color/white"
-                app:met_floatingLabel="highlight"
-                app:met_primaryColor="@color/white"
-                app:met_singleLineEllipsis="true"
-
-                />
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/rating"
-                android:text="Rating"
+                android:hint="Input your Skills"
                 android:textSize="20sp"
-                android:inputType="number"
+                android:inputType="text"
                 android:textColorHint="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -2,6 +2,9 @@ package cloud.viyana.skillmash;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +22,8 @@ import com.google.gson.GsonBuilder;
 import com.loopj.android.http.*;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import cloud.viyana.skillmash.Models.Profile;
@@ -29,7 +34,7 @@ import io.realm.Realm;
 public class LoginActivity extends AppCompatActivity {
     CallbackManager mCallbackManager;
     ProgressDialog mProgressDialog;
-
+    public static String PACKAGE_NAME;
     private static final String PUBLIC_PROFILE = "public_profile";
     private static final String EMAIL = "email";
     private final String tag = "FACELOG";
@@ -39,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PrintHashKey();
         setContentView(R.layout.activity_login);
         realm = Realm.getDefaultInstance();
         mCallbackManager = CallbackManager.Factory.create();
@@ -92,6 +98,27 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void PrintHashKey() {
+        PACKAGE_NAME = getApplicationContext().getPackageName();
+        Log.d(tag, PACKAGE_NAME);
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    PACKAGE_NAME,
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     private void setLoader() {
         mProgressDialog = new ProgressDialog(LoginActivity.this);

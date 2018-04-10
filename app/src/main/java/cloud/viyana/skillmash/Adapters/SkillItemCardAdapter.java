@@ -32,6 +32,11 @@ public class SkillItemCardAdapter extends  RecyclerView.Adapter <SkillItemsViewH
         this.skillsList = skillsList;
     }
 
+    public void update(List<Skill> skl){
+        this.skillsList = skl;
+        notifyDataSetChanged();
+    }
+
     @Override
     public SkillItemsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mMainActivity.getBaseContext());
@@ -48,8 +53,6 @@ public class SkillItemCardAdapter extends  RecyclerView.Adapter <SkillItemsViewH
         String rating = Integer.toString(object.ratingSummary());
 
         mMainActivity.isUpdate = true;
-        mMainActivity.skill.setText(title);
-        mMainActivity.rating.setText(rating);
 
         holder.skillTitle.setText(title);
         holder.skillRating.setText(rating);
@@ -63,7 +66,7 @@ public class SkillItemCardAdapter extends  RecyclerView.Adapter <SkillItemsViewH
     }
 }
 
-class SkillItemsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
+class SkillItemsViewHolder extends RecyclerView.ViewHolder {
 
     SkillitemCardListener mSkillitemCardListener;
     TextView skillTitle, skillRating;
@@ -71,23 +74,9 @@ class SkillItemsViewHolder extends RecyclerView.ViewHolder implements View.OnCli
 
     public SkillItemsViewHolder(View itemView) {
         super(itemView);
-        itemView.setOnClickListener(this);
-        itemView.setOnCreateContextMenuListener(this);
         skillRatingbar = (RatingBar) itemView.findViewById(R.id.skill_rating_bar);
         skillTitle = (TextView) itemView.findViewById(R.id.skill_name);
         skillRating = (TextView) itemView.findViewById(R.id.skill_rating);
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-       menu.setHeaderTitle("Manage Skills");
-        menu.add(0,0,getAdapterPosition(),"Rate Skill");
-        menu.add(0,0,getAdapterPosition(),"Rate Skill");
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        mSkillitemCardListener.onClick(v, getAdapterPosition(), false);
-    }
 }
