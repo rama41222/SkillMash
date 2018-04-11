@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_skills"
+            android:id="@+id/list_friend_skills"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_marginTop="32dp"
             android:layout_width="match_parent"

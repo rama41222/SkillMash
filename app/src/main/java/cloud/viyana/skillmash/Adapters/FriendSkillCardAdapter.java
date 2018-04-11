@@ -3,11 +3,11 @@ package cloud.viyana.skillmash.Adapters;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import cloud.viyana.skillmash.RateFriendsActivity;
 class ListItemViewholder extends RecyclerView.ViewHolder implements  View.OnClickListener, View.OnCreateContextMenuListener{
 
     FriendSkillCardClickListener mFriendSkillCardClickListener;
-    TextureView mSkill, mRating;
+    TextView mSkill, mRating;
     ImageView mProfImage;
     RatingBar mStarRatingBar;
 
@@ -30,8 +30,8 @@ class ListItemViewholder extends RecyclerView.ViewHolder implements  View.OnClic
     }
 
     private void setupui(View itemView) {
-        mSkill = (TextureView) itemView.findViewById(R.id.skill_title);
-        mRating = (TextureView) itemView.findViewById(R.id.skill_current_rating);
+        mSkill = (TextView) itemView.findViewById(R.id.skill_title);
+        mRating = (TextView) itemView.findViewById(R.id.skill_current_rating);
         mProfImage = (ImageView) itemView.findViewById(R.id.prof_pic);
         mStarRatingBar = (RatingBar) itemView.findViewById(R.id.skill_stars);
     }

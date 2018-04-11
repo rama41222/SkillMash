@@ -10,6 +10,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -35,8 +36,9 @@ public class RateFriendsActivity extends AppCompatActivity {
     RecyclerView mFriendSkillItem;
     RecyclerView.LayoutManager mLayoutManager;
     public RatingBar mFriendSkillRatingBar;
-
-    public MaterialEditText mFriendSkillText;
+    private ImageView profPic;
+    public TextView mFriendSkillText;
+    public TextView mFriendSkillCurrentRating;
     public int initFriendRating = 0;
     public boolean isUpdate = false;
 
@@ -76,15 +78,21 @@ public class RateFriendsActivity extends AppCompatActivity {
 
 
     private void loadSkills() {
+
+
+
+
+
+
     }
 
     private void setupui() {
         addSkills = (FloatingActionButton) findViewById(R.id.add_skills);
-
-//        mSkill = (TextureView) itemView.findViewById(R.id.skill_title);
-//        mRating = (TextureView) itemView.findViewById(R.id.skill_current_rating);
-//        mProfImage = (ImageView) itemView.findViewById(R.id.prof_pic);
-//        mStarRatingBar = (RatingBar) itemView.findViewById(R.id.skill_stars);
+        mFriendSkillRatingBar = (RatingBar) findViewById(R.id.skill_stars);
+        mFriendSkillItem = (RecyclerView) findViewById(R.id.list_friend_skills);
+        mFriendSkillText = (TextView) findViewById(R.id.skill_title);
+        profPic = (ImageView) findViewById(R.id.prof_pic);
+        mFriendSkillCurrentRating = (TextView) findViewById(R.id.skill_current_rating);
     }
 
     private void setupEventListeners() {
