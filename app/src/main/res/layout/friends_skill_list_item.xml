@@ -23,6 +23,7 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_gravity="center"
+               android:id="@+id/prof_pic"
                android:src="@drawable/ic_people_black_24dp"/>
 
        </LinearLayout>
@@ -43,7 +44,7 @@
                <TextView
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
-                   android:id="@+id/skill_name"
+                   android:id="@+id/skill_title"
                    android:textSize="20sp"
                    android:textColor="@color/com_facebook_button_background_color"
                    android:text="Java"
@@ -54,7 +55,7 @@
                <TextView
                    android:layout_width="match_parent"
                    android:layout_height="match_parent"
-                   android:id="@+id/skill_rating"
+                   android:id="@+id/skill_current_rating"
                    android:textAlignment="viewEnd"
                    android:textSize="20sp"
                    android:textColor="@color/com_facebook_button_background_color"
@@ -71,7 +72,7 @@
                android:gravity="center_horizontal">
 
                <RatingBar
-                   android:id="@+id/skill_rating_bar"
+                   android:id="@+id/skill_stars"
                    android:layout_width="wrap_content"
                    android:layout_height="match_parent"
                    android:numStars="5"
