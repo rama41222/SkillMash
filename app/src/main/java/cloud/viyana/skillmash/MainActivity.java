@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
     SkillItemCardAdapter mSkillItemCardAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mSkillItem.setLayoutManager(mLayoutManager);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +114,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(tag, newSkill);
                 postUserSkills(accessToken,newSkill,userId);
 
+            }
+        });
+
+        nextPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent newCityIntent = new Intent(MainActivity.this, RateFriendsActivity.class);
+                startActivity(newCityIntent);
             }
         });
     }
@@ -172,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable e) {
                 super.onFailure(statusCode, headers, responseString, e);
@@ -204,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, responseBody);
                 getUserSkills(accessToken, userId, true);
                 Toast.makeText(MainActivity.this, "New Skill, You are more competent than before", Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
