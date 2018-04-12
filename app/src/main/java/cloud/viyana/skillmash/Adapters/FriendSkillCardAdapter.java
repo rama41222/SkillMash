@@ -1,6 +1,7 @@
 package cloud.viyana.skillmash.Adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cloud.viyana.skillmash.Models.FriendSkill;
+import cloud.viyana.skillmash.Models.Skill;
 import cloud.viyana.skillmash.R;
 import cloud.viyana.skillmash.RateFriendsActivity;
 
@@ -55,7 +57,17 @@ class ListItemViewholder extends RecyclerView.ViewHolder implements  View.OnClic
 public class FriendSkillCardAdapter extends RecyclerView.Adapter<ListItemViewholder>{
 
     RateFriendsActivity mRateFriendsActivity;
-    List<FriendSkill> mFriendSkill;
+    List<Skill> mFriendSkill;
+
+    public FriendSkillCardAdapter(RateFriendsActivity mRateFriendsActivity, List<Skill> mFriendSkill) {
+        this.mRateFriendsActivity = mRateFriendsActivity;
+        this.mFriendSkill = mFriendSkill;
+    }
+
+    public void update(List<Skill> skl){
+        this.mFriendSkill = skl;
+        notifyDataSetChanged();
+    }
 
     @Override
     public ListItemViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -66,7 +78,17 @@ public class FriendSkillCardAdapter extends RecyclerView.Adapter<ListItemViewhol
 
     @Override
     public void onBindViewHolder(ListItemViewholder holder, int position) {
+        Skill object = mFriendSkill.get(position);
+        String id = object.getId();
+        String title = object.getSkill();
+       String rating = Integer.toString(3);
+        Log.d("FACELOG", title);
+        mRateFriendsActivity.isUpdate = true;
 
+        holder.mSkill.setText("Vio");
+//        holder.mRating.setText(rating);
+//        holder.skillRatingbar.setRating(object.ratingSummary());
+//        Log.d("FACELOG", object.getSkill());
     }
 
     @Override

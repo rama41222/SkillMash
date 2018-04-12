@@ -10,9 +10,9 @@ public class FriendSkillSet {
     @SerializedName("skills")
     @Expose
 
-    private List<FriendSkillSet> skillset;
+    private List<FriendSkill> skillset;
 
-    public List<FriendSkillSet> getSkills() {
+    public List<FriendSkill> getSkills() {
         return skillset;
     }
 
